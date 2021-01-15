@@ -1,40 +1,74 @@
-let min = 1,
-    max = 10,
-    winningNum = 2,
-    guessesLeft = 3;
+let min = 1;
+let max = 15;
+let winningNum = getRandomInt(min, max);
+let guessesLeft = 3;
 
 const game = document.querySelector("#game");
-const minNum = document.querySelector(".min-num");
 const maxNum = document.querySelector(".max-num");
-const guessBtn = document.querySelector("#guess-btn");
+const minNum = document.querySelector(".min-num");
 const guessInput = document.querySelector("#guess-input");
+const guessBtn = document.querySelector("#guess-btn");
 const message = document.querySelector(".message");
 
-minNum.textContent = min;
 maxNum.textContent = max;
+minNum.textContent = min;
+
+function getRandomInt(mini, maxi) {
+    mini = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 guessBtn.addEventListener("click", function () {
     let guess = parseInt(guessInput.value);
 
-    if (isNaN(guess) || guess <= min || guess >= max) {
+    if (isNaN(guess) || guess < min || guess > max) {
         setMessage(`Please enter a number between ${min} and ${max}`, "red");
     } else {
         clearMessage();
     }
 
     if (guess === winningNum) {
-        guessInput.disabled = true;
-        guessInput.style.borderColor = "green";
-        setMessage(`${winningNum} is correct! YOU WIN`, "green");
+        gameOver(true, `${guess} was the correct number! YOU WIN`);
     } else if (
+        guess >= min &&
+        guess <= max &&
         guess !== winningNum &&
-        guessInput.value !== "" &&
-        guess < max &&
-        guess > min
+        guessInput.value !== ""
     ) {
-        setMessage(`${guess} is wrong! Try again`, "red");
+        setMessage(
+            `${guess} is wrong. You have ${guessesLeft} guesses left. Try again!`,
+            "red"
+        );
+
+        guessInput.value = "";
+
+        if (guessesLeft === 0) {
+            gameOver(
+                false,
+                `Game Over. YOU LOSE! The correct number was ${winningNum}`
+            );
+        } else {
+            guessesLeft = guessesLeft - 1;
+        }
     }
 });
+
+function gameOver(won, msg) {
+    let color;
+
+    guessInput.disabled = true;
+
+    if (won === true) {
+        color = "green";
+    } else {
+        color = "red";
+    }
+
+    guessInput.style.borderColor = color;
+
+    setMessage(msg, color);
+}
 
 guessInput.addEventListener("click", function () {
     guessInput.value = "";
