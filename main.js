@@ -1,5 +1,5 @@
 let min = 1;
-let max = 15;
+let max = 10;
 let winningNum = getRandomInt(min, max);
 let guessesLeft = 3;
 
@@ -68,6 +68,12 @@ function gameOver(won, msg) {
     guessInput.style.borderColor = color;
 
     setMessage(msg, color);
+
+    guessBtn.value = "Play again";
+
+    guessBtn.addEventListener("click", function () {
+        location.reload();
+    });
 }
 
 guessInput.addEventListener("click", function () {
